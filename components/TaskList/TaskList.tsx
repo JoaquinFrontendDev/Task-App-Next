@@ -1,23 +1,14 @@
 import Task from "../Task/Task";
 import { useDrop } from "react-dnd";
 import { useEffect } from "react";
-import { useTasks } from "../../context/TaskContext";
-
-export interface TaskProps {
-  id: any;
-  title: string;
-  body: string;
-  category: string;
-  priority: string;
-  status: string;
-}
+import { TaskProps, useTasks } from "../../context/TaskContext";
 
 function TaskList() {
-  const {tasks, fetchTasks} = useTasks();
+  const { tasks, fetchTasks } = useTasks();
 
   useEffect(() => {
     fetchTasks();
-  }, [tasks]);
+  }, [tasks, fetchTasks]);
 
   // const [{ isOver }, drop] = useDrop(() => ({
   //   accept: "Task",
@@ -34,7 +25,7 @@ function TaskList() {
   return (
     <>
       <div className="mt-24 grid h-full w-full grid-cols-3 place-items-center gap-3">
-        {tasks.map((task: TaskProps) => (
+        {tasks!.map((task: TaskProps) => (
           <Task
             key={task.id}
             id={task.id}

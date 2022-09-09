@@ -1,11 +1,15 @@
 import { createContext, useContext, useState } from "react";
-import {supabase} from '../lib/initSupabase'
+import { supabase } from "../lib/initSupabase";
 
 interface TaskContextProps {
-  children: React.ReactElement;
+  children?: React.ReactElement;
+  tasks?: TaskProps[] | null;
+  fetchTasks?: (tasks: TaskProps[]) => void;
+  addTask?: (values: FormikValueProps) => void;
+  deleteTask?: (id: TaskProps) => void;
 }
 
-interface TaskProps {
+export interface TaskProps {
   id: any;
   title: string;
   body: string;
@@ -15,13 +19,13 @@ interface TaskProps {
 }
 
 interface FormikValueProps {
-  taskTitle: string,
-  taskBody: string,
-  category: string,
-  taskPriority: string
+  taskTitle: string;
+  taskBody: string;
+  category: string;
+  taskPriority: string;
 }
 
-export const TaskContext = createContext({});
+export const TaskContext = createContext<TaskContextProps | null>(null);
 
 export const useTasks = () => {
   const context = useContext(TaskContext);
@@ -31,18 +35,18 @@ export const useTasks = () => {
 };
 
 export const TaskContextProvider = ({ children }: TaskContextProps) => {
-  const [tasks, setTasks] = useState<TaskProps[]>([]);
+  const [tasks, setTasks] = useState<TaskProps[] | null | undefined>([]);
 
   const fetchTasks = async () => {
-    let { data: tasks, error } = await supabase.from("tasks").select("*");
+    let { data, error } = await supabase.from("tasks").select("*");
     if (error) console.log("error", error);
-    else setTasks(tasks);
+    else setTasks(data);
   };
 
   const addTask = async (values: FormikValueProps) => {
-    const {taskTitle, taskBody, category, taskPriority} = values;
+    const { taskTitle, taskBody, category, taskPriority } = values;
     if (values) {
-      let { data: task, error } = await supabase.from("tasks").insert({
+      let { data, error } = await supabase.from("tasks").insert({
         title: taskTitle,
         body: taskBody,
         category: category,
@@ -55,11 +59,11 @@ export const TaskContextProvider = ({ children }: TaskContextProps) => {
   const deleteTask = async (id: TaskProps) => {
     try {
       await supabase.from("tasks").delete().eq("id", id);
-      setTasks(tasks.filter((task) => task.id !== id));
+      setTasks(tasks!.filter((task) => task.id !== id));
     } catch (error) {
       console.log("error", error);
     }
-  }
+  };
 
   return (
     <TaskContext.Provider value={{ tasks, fetchTasks, addTask, deleteTask }}>

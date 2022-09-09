@@ -1,5 +1,5 @@
 import { useDrag } from "react-dnd";
-import { TaskProps } from "../TaskList/TaskList";
+import { TaskProps } from "../../context/TaskContext";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useTasks } from "../../context/TaskContext";
 

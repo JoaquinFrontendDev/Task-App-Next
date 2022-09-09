@@ -1,9 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
 import Header from "../components/Header/Header";
 import Layout from "../components/Layout/Layout";
-import TaskList, { TaskProps } from "../components/TaskList/TaskList";
+import TaskList from "../components/TaskList/TaskList";
 
 const Home: NextPage = () => {
 
