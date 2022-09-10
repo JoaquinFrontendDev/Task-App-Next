@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.0",
-    "@supabase/supabase-js": "^2.0.0-rc.9",
+    "@supabase/supabase-js": "1.35.6",
     "formik": "^2.2.9",
     "next": "12.2.5",
     "next-auth": "^4.10.3",
@@ -18,7 +18,8 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "18.2.0",
-    "react-icons": "^4.4.0"
+    "react-icons": "^4.4.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",

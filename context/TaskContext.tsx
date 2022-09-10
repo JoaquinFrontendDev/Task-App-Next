@@ -1,12 +1,13 @@
+import {useSession} from "next-auth/react";
 import { createContext, useContext, useState } from "react";
 import { supabase } from "../lib/initSupabase";
 
 interface TaskContextProps {
   children?: React.ReactElement;
   tasks?: TaskProps[] | null;
-  fetchTasks?: (tasks: TaskProps[]) => void;
-  addTask?: (values: FormikValueProps) => void;
-  deleteTask?: (id: TaskProps) => void;
+  fetchTasks: (tasks?: TaskProps[]) => void;
+  addTask: (values: FormikValueProps) => void;
+  deleteTask: (id: TaskProps) => void;
 }
 
 export interface TaskProps {
@@ -27,18 +28,22 @@ interface FormikValueProps {
 
 export const TaskContext = createContext<TaskContextProps | null>(null);
 
+
+
 export const useTasks = () => {
   const context = useContext(TaskContext);
   if (!context)
-    throw new Error("useTasks must be used within a TaskContextProvider");
+  throw new Error("useTasks must be used within a TaskContextProvider");
   return context;
 };
 
 export const TaskContextProvider = ({ children }: TaskContextProps) => {
   const [tasks, setTasks] = useState<TaskProps[] | null | undefined>([]);
+  const { data: thirdPartysession, status } = useSession();
 
   const fetchTasks = async () => {
-    let { data, error } = await supabase.from("tasks").select("*");
+    const user_email = thirdPartysession?.user?.email;
+    let { data, error } = await supabase.from("tasks").select().eq('user_email', user_email);
     if (error) console.log("error", error);
     else setTasks(data);
   };
@@ -47,10 +52,11 @@ export const TaskContextProvider = ({ children }: TaskContextProps) => {
     const { taskTitle, taskBody, category, taskPriority } = values;
     if (values) {
       let { data, error } = await supabase.from("tasks").insert({
-        title: taskTitle,
-        body: taskBody,
-        category: category,
-        priority: taskPriority,
+        task_title: taskTitle,
+        task_body: taskBody,
+        task_category: category,
+        task_priority: taskPriority,
+        user_email: thirdPartysession!.user!.email,
       });
       if (error) console.log(error.message);
     }

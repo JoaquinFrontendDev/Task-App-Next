@@ -2,6 +2,7 @@ import Task from "../Task/Task";
 import { useDrop } from "react-dnd";
 import { useEffect } from "react";
 import { TaskProps, useTasks } from "../../context/TaskContext";
+import { useSession } from "next-auth/react";
 
 function TaskList() {
   const { tasks, fetchTasks } = useTasks();
