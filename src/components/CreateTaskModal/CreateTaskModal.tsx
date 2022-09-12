@@ -1,6 +1,5 @@
 import { useFormik } from "formik";
-import {useTasks} from "../../context/TaskContext";
-import { supabase } from "../../lib/initSupabase";
+import { useTasksContext} from "../../context/TaskContext";
 
 interface CreateTaskModalProps {
   closeModal: () => void;
@@ -9,7 +8,7 @@ interface CreateTaskModalProps {
 function CreateTaskModal({ closeModal }: CreateTaskModalProps) {
   const priorities = ["High", "Medium", "Low"];
 
-  const { addTask } = useTasks();
+  const { addTask } = useTasksContext();
 
   const formik = useFormik({
     initialValues: {

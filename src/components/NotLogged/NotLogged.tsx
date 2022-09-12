@@ -1,7 +1,7 @@
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 
 function NotLogged() {
+
   return (
     <div className="flex min-h-screen max-w-full flex-col items-center justify-center px-12">
       <h1 className="max-w-xl text-center text-4xl">

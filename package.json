@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.0",
-    "@supabase/supabase-js": "1.35.6",
+    "@supabase/supabase-js": "^1.35.6",
     "formik": "^2.2.9",
     "next": "12.2.5",
     "next-auth": "^4.10.3",

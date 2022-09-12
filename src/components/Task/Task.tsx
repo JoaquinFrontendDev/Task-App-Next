@@ -1,10 +1,9 @@
 import { useDrag } from "react-dnd";
-import { TaskProps } from "../../context/TaskContext";
+import { TaskProps, useTasksContext } from "../../context/TaskContext";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { useTasks } from "../../context/TaskContext";
 
 function Task({ id, title, body, category, priority, status }: TaskProps) {
-  const { deleteTask } = useTasks();
+  const { deleteTask } = useTasksContext();
 
   const handleDelete = () => {
     deleteTask(id)

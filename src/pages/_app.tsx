@@ -5,10 +5,10 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { TaskContextProvider } from "../context/TaskContext";
 import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+function MyApp({ Component, pageProps: { contextProps, session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <TaskContextProvider>
+      <TaskContextProvider {...contextProps}>
         <DndProvider backend={HTML5Backend}>
           <Component {...pageProps} />
         </DndProvider>

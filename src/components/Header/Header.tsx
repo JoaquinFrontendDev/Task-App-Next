@@ -2,19 +2,17 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { HiPlus } from "react-icons/hi";
 import { useModal } from "../../hooks/useModal/useModal";
-import {supabase} from "../../lib/initSupabase";
 import CreateTaskModal from "../CreateTaskModal/CreateTaskModal";
 import ReusableModal from "../CreateTaskModal/ReusableModal";
 
 function Header() {
-  const session = supabase.auth.session()
-  console.log(session)
   const [
     isOpenCreateTaskModal,
     setIsOpenCreateTaskModal,
     closeCreateTaskModal,
   ] = useModal();
-  const { data: thirdPartySession } = useSession();
+  const { data: session } = useSession();
+  console.log(session)
 
   return (
     <div className="mt-24 flex w-full items-center justify-between">
@@ -22,19 +20,18 @@ function Header() {
         <h1 className="text-4xl font-semibold text-gray-900">
           Welcome back,{" "}
           <span className="text-4xl font-semibold text-indigo-500">
-            {thirdPartySession ? thirdPartySession?.user?.name : session?.user?.email}
+            {session?.user?.name}
           </span>
         </h1>
 
         <div className="mx-4">
-          {thirdPartySession ? <Image
-            src={thirdPartySession?.user?.image!}
+          <Image
+            src={session?.user?.image!}
             width={40}
             height={40}
             alt="user-avatar"
             className="rounded-full"
-          /> : <div>No Pic</div>}
-
+          />
         </div>
       </div>
       <div>

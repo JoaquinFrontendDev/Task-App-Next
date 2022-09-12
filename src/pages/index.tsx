@@ -1,20 +1,18 @@
 import type { NextPage } from "next";
 import { useSession, signOut } from "next-auth/react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import Header from "../components/Header/Header";
 import Layout from "../components/Layout/Layout";
 import NotLogged from "../components/NotLogged/NotLogged";
 import TaskList from "../components/TaskList/TaskList";
-import { supabase } from "../lib/initSupabase";
 
 const Home: NextPage = () => {
-  const { data: thirdPartySession, status } = useSession();
-  const session = supabase.auth.session()
-  console.log(session)
-  const handleSignOut =  () => {
+  const { data: session, status } = useSession();
+
+  const handleSignOut = () => {
     signOut();
   };
-
 
   return (
     <div>
@@ -29,7 +27,7 @@ const Home: NextPage = () => {
             Loading...
           </span>
         </div>
-      ) : (thirdPartySession && status === "authenticated") || session ? (
+      ) : session && status === "authenticated" ? (
         <Layout>
           <button
             onClick={handleSignOut}

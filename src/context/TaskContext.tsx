@@ -1,4 +1,4 @@
-import {useSession} from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { createContext, useContext, useState } from "react";
 import { supabase } from "../lib/initSupabase";
 
@@ -8,6 +8,7 @@ interface TaskContextProps {
   fetchTasks: (tasks?: TaskProps[]) => void;
   addTask: (values: FormikValueProps) => void;
   deleteTask: (id: TaskProps) => void;
+  handleOAuthSignIn: (provider: string) => () => void;
 }
 
 export interface TaskProps {
@@ -30,20 +31,29 @@ export const TaskContext = createContext<TaskContextProps | null>(null);
 
 
 
-export const useTasks = () => {
+export const useTasksContext = () => {
   const context = useContext(TaskContext);
   if (!context)
   throw new Error("useTasks must be used within a TaskContextProvider");
   return context;
 };
 
+
 export const TaskContextProvider = ({ children }: TaskContextProps) => {
   const [tasks, setTasks] = useState<TaskProps[] | null | undefined>([]);
-  const { data: thirdPartysession, status } = useSession();
+  const { data: session, status } = useSession();
+
+
+  const handleOAuthSignIn = (provider: string) => () => {
+    signIn(provider, { callbackUrl: "/" });
+  };
 
   const fetchTasks = async () => {
-    const user_email = thirdPartysession?.user?.email;
-    let { data, error } = await supabase.from("tasks").select().eq('user_email', user_email);
+    const user_email = session?.user?.email;
+    let { data, error } = await supabase
+      .from("tasks")
+      .select()
+      .eq("user_email", user_email);
     if (error) console.log("error", error);
     else setTasks(data);
   };
@@ -56,7 +66,7 @@ export const TaskContextProvider = ({ children }: TaskContextProps) => {
         task_body: taskBody,
         task_category: category,
         task_priority: taskPriority,
-        user_email: thirdPartysession!.user!.email,
+        user_email: session!.user!.email,
       });
       if (error) console.log(error.message);
     }
@@ -72,7 +82,15 @@ export const TaskContextProvider = ({ children }: TaskContextProps) => {
   };
 
   return (
-    <TaskContext.Provider value={{ tasks, fetchTasks, addTask, deleteTask }}>
+    <TaskContext.Provider
+      value={{
+        tasks,
+        fetchTasks,
+        addTask,
+        deleteTask,
+        handleOAuthSignIn,
+      }}
+    >
       {children}
     </TaskContext.Provider>
   );
