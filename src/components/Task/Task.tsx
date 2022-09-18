@@ -1,4 +1,3 @@
-import { useDrag } from "react-dnd";
 import { TaskProps, useTasksContext } from "../../context/TaskContext";
 import { FaRegTrashAlt } from "react-icons/fa";
 
@@ -6,20 +5,12 @@ function Task({ id, title, body, category, priority, status }: TaskProps) {
   const { deleteTask } = useTasksContext();
 
   const handleDelete = () => {
-    deleteTask(id)
-  }
+    deleteTask(id);
+  };
 
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: "Task",
-    item: { id: id },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  }));
   return (
     <div
-      ref={drag}
-      className={`relative flex h-full w-full max-w-xs flex-col justify-between rounded-sm border border-t-8 p-5 shadow-xl ${
+      className={`relative flex h-full w-full max-w-sm flex-col justify-between rounded-sm border border-t-8 p-5 shadow-xl ${
         priority === "High"
           ? "border-t-red-500"
           : priority === "Medium"

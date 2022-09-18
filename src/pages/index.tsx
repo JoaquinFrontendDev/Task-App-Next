@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import { useSession, signOut } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import Header from "../components/Header/Header";
 import Layout from "../components/Layout/Layout";
 import NotLogged from "../components/NotLogged/NotLogged";

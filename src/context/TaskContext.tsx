@@ -5,9 +5,11 @@ import { supabase } from "../lib/initSupabase";
 interface TaskContextProps {
   children?: React.ReactElement;
   tasks?: TaskProps[] | null;
+  setTasks: (tasks: any) => void;
   fetchTasks: (tasks?: TaskProps[]) => void;
   addTask: (values: FormikValueProps) => void;
   deleteTask: (id: TaskProps) => void;
+  updateTask: (tasks: TaskProps[]) => void;
   handleOAuthSignIn: (provider: string) => () => void;
 }
 
@@ -29,20 +31,16 @@ interface FormikValueProps {
 
 export const TaskContext = createContext<TaskContextProps | null>(null);
 
-
-
 export const useTasksContext = () => {
   const context = useContext(TaskContext);
   if (!context)
-  throw new Error("useTasks must be used within a TaskContextProvider");
+    throw new Error("useTasks must be used within a TaskContextProvider");
   return context;
 };
-
 
 export const TaskContextProvider = ({ children }: TaskContextProps) => {
   const [tasks, setTasks] = useState<TaskProps[] | null | undefined>([]);
   const { data: session, status } = useSession();
-
 
   const handleOAuthSignIn = (provider: string) => () => {
     signIn(provider, { callbackUrl: "/" });
@@ -62,23 +60,26 @@ export const TaskContextProvider = ({ children }: TaskContextProps) => {
     const { taskTitle, taskBody, category, taskPriority } = values;
     if (values) {
       let { data, error } = await supabase.from("tasks").insert({
-        task_title: taskTitle,
-        task_body: taskBody,
-        task_category: category,
-        task_priority: taskPriority,
-        user_email: session!.user!.email,
+        title: taskTitle,
+        body: taskBody,
+        category: category,
+        priority: taskPriority,
+        user_email: session?.user?.email,
       });
+      fetchTasks();
       if (error) console.log(error.message);
     }
   };
 
   const deleteTask = async (id: TaskProps) => {
-    try {
-      await supabase.from("tasks").delete().eq("id", id);
-      setTasks(tasks!.filter((task) => task.id !== id));
-    } catch (error) {
-      console.log("error", error);
-    }
+    const { data, error } = await supabase.from("tasks").delete().eq("id", id);
+    setTasks(tasks!.filter((task) => task.id !== id));
+    console.log(id)
+  };
+
+  const updateTask = async (tasks: TaskProps[]) => {
+    const { data, error } = await supabase.from("tasks").update(tasks);
+    fetchTasks();
   };
 
   return (
@@ -87,7 +88,9 @@ export const TaskContextProvider = ({ children }: TaskContextProps) => {
         tasks,
         fetchTasks,
         addTask,
+        setTasks,
         deleteTask,
+        updateTask,
         handleOAuthSignIn,
       }}
     >

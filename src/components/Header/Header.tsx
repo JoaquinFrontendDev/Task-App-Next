@@ -12,7 +12,6 @@ function Header() {
     closeCreateTaskModal,
   ] = useModal();
   const { data: session } = useSession();
-  console.log(session)
 
   return (
     <div className="mt-24 flex w-full items-center justify-between">

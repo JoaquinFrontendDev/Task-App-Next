@@ -1,77 +1,35 @@
-import Task from "../Task/Task";
-import { useDrop } from "react-dnd";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TaskProps, useTasksContext } from "../../context/TaskContext";
 import TaskCol from "../TaskCol/TaskCol";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 interface StatusProps {
-  id: number,
-  status: string
+  id: number;
+  status: string;
 }
 
 function TaskList() {
-  const { tasks, fetchTasks } = useTasksContext();
+  const { tasks, fetchTasks, setTasks } = useTasksContext();
 
   useEffect(() => {
     fetchTasks();
-  }, [tasks, fetchTasks]);
-
-  // const [{ isOver }, drop] = useDrop(() => ({
-  //   accept: "Task",
-  //   drop: (item: any) => moveTask(item.id),
-  //   collect: (monitor) => ({
-  //     isOver: !!monitor.isOver(),
-  //   }),
-  // }));
-
-  // const moveTask = (id: number) => {
-  //   setTasks(tasks.filter((tasks) => tasks.id !== id));
-  // };
+  }, []);
 
   return (
-    <>
-      <div className="mt-24 grid h-full w-full grid-cols-3 place-items-center gap-3">
-          <TaskCol status="Requested">
-            {tasks!.map((task: TaskProps) => (
-              <Task
-                key={task.id}
-                id={task.id}
-                title={task.title}
-                body={task.body}
-                category={task.category}
-                priority={task.priority}
-                status={task.status}
-              />
-            ))}
-          </TaskCol>
-          <TaskCol status="In Progress">
-            {tasks!.map((task: TaskProps) => (
-              <Task
-                key={task.id}
-                id={task.id}
-                title={task.title}
-                body={task.body}
-                category={task.category}
-                priority={task.priority}
-                status={task.status}
-              />
-            ))}
-          </TaskCol>
-          <TaskCol status="Done">
-            {tasks!.map((task: TaskProps) => (
-              <Task
-                key={task.id}
-                id={task.id}
-                title={task.title}
-                body={task.body}
-                category={task.category}
-                priority={task.priority}
-                status={task.status}
-              />
-            ))}
-          </TaskCol>
-      </div>
-    </>
+    <div className="mt-24 grid h-full w-full grid-cols-3 place-items-start gap-3">
+      <TaskCol
+        tasks={tasks!.filter((task) => task.status === "requested")}
+        status="Requested"
+      />
+      <TaskCol
+        tasks={tasks!.filter((task) => task.status === "in-progress")}
+        status="In Progress"
+      />
+      <TaskCol
+        tasks={tasks!.filter((task) => task.status === "done")}
+        status="Done"
+      />
+    </div>
   );
 }
 
